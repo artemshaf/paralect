@@ -8,16 +8,11 @@ import {
   Button,
   Stack,
   TextInput,
-  PasswordInput,
   Group,
   Title,
   Text,
-  Checkbox,
-  SimpleGrid,
-  Tooltip,
+  Box,
 } from '@mantine/core';
-
-import { GoogleIcon } from 'public/icons';
 
 import config from 'config';
 import { RoutePath } from 'routes';
@@ -25,6 +20,7 @@ import { handleError } from 'utils';
 import { Link } from 'components';
 
 import { accountApi, accountConstants } from 'resources/account';
+import { IconCircleCheck } from '@tabler/icons-react';
 
 const schema = z.object({
   firstName: z.string().min(1, 'Please enter First name').max(100),
@@ -56,7 +52,6 @@ const SignUp: NextPage = () => {
   const [signupToken, setSignupToken] = useState();
 
   const [passwordRulesData, setPasswordRulesData] = useState(passwordRules);
-  const [opened, setOpened] = useState(false);
 
   const {
     register,
@@ -92,23 +87,23 @@ const SignUp: NextPage = () => {
     onError: (e) => handleError(e, setError),
   });
 
-  const label = (
-    <SimpleGrid
-      cols={1}
-      spacing="xs"
-      p={4}
-    >
-      <Text>Password must:</Text>
-      {passwordRulesData.map((ruleData) => (
-        <Checkbox
-          styles={{ label: { color: 'white' } }}
-          key={ruleData.title}
-          checked={ruleData.done}
-          label={ruleData.title}
-        />
-      ))}
-    </SimpleGrid>
-  );
+  // const label = (
+  //   <SimpleGrid
+  //     cols={1}
+  //     spacing="xs"
+  //     p={4}
+  //   >
+  //     <Text>Password must:</Text>
+  //     {passwordRulesData.map((ruleData) => (
+  //       <Checkbox
+  //         styles={{ label: { color: 'white' } }}
+  //         key={ruleData.title}
+  //         checked={ruleData.done}
+  //         label={ruleData.title}
+  //       />
+  //     ))}
+  //   </SimpleGrid>
+  // );
 
   if (registered) {
     return (
@@ -150,38 +145,30 @@ const SignUp: NextPage = () => {
             <Stack spacing={20}>
               <TextInput
                 {...register('firstName')}
-                label="First Name"
+                label="Email adress"
                 maxLength={100}
                 placeholder="First Name"
                 error={errors.firstName?.message}
               />
               <TextInput
                 {...register('lastName')}
-                label="Last Name"
+                label="Password"
                 maxLength={100}
                 placeholder="Last Name"
                 error={errors.lastName?.message}
               />
-              <TextInput
-                {...register('email')}
-                label="Email Address"
-                placeholder="Email Address"
-                error={errors.email?.message}
-              />
-              <Tooltip
-                label={label}
-                withArrow
-                opened={opened}
-              >
-                <PasswordInput
-                  {...register('password')}
-                  label="Password"
-                  placeholder="Enter password"
-                  onFocus={() => setOpened(true)}
-                  onBlur={() => setOpened(false)}
-                  error={errors.password?.message}
-                />
-              </Tooltip>
+              <Box display="flex" style={{ alignItems: 'center', gap: '12px' }}>
+                <IconCircleCheck />
+                <Text>Must be at least 8 characters</Text>
+              </Box>
+              <Box display="flex" style={{ alignItems: 'center', gap: '12px' }}>
+                <IconCircleCheck />
+                <Text>Must contain at least 1 number</Text>
+              </Box>
+              <Box display="flex" style={{ alignItems: 'center', gap: '12px' }}>
+                <IconCircleCheck />
+                <Text>Must contain lower case and capital letters</Text>
+              </Box>
             </Stack>
             <Button
               type="submit"
@@ -189,19 +176,11 @@ const SignUp: NextPage = () => {
               fullWidth
               mt={34}
             >
-              Sign Up
+              Create Account
             </Button>
           </form>
         </Stack>
         <Stack spacing={34}>
-          <Button
-            component="a"
-            leftIcon={<GoogleIcon />}
-            href={`${config.API_URL}/account/sign-in/google/auth`}
-            variant="outline"
-          >
-            Continue with Google
-          </Button>
           <Group sx={{ fontSize: '16px', justifyContent: 'center' }} spacing={12}>
             Have an account?
             <Link
